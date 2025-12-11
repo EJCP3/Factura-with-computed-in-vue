@@ -4,8 +4,8 @@
 
 ### Screenshot 
 
-
+![PC](public/capture.png)
 
 ### Links
 
-- URL: [Factura with computed in vue]()
+- URL: [Factura with computed in vue](https://facturawithcomputed.netlify.app/)

@@ -6,7 +6,7 @@
         <input v-model="producto.nombre" type="text" placeholder="Nombre" />
       </label>
       <label>
-        <input v-model="producto.precio" type="number" placeholder="precio" />
+        <input v-model="producto.precio" type="decimal" placeholder="precio" />
       </label>
       <button>Agregar</button>
     </form>
@@ -18,16 +18,30 @@
       </p>
     </article>
 
-    <ul>
-      <li v-for="producto in listaProductos" :key="producto.nombre">
-        <span>{{ producto.nombre }}</span
-        >--------- <span>${{ producto.itbs }}</span
-        >---------
-        <span>${{ producto.precio }}</span>
-      </li>
-    </ul>
+    <table class="tabla-productos">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>ITBS</th>
+          <th>Precio</th>
+        </tr>
+      </thead>
 
-    <p class="total">Total: <span>{{ totalProducto }}</span></p>
+      <tbody>
+        <tr v-for="producto in listaProductos" :key="producto.nombre">
+          <td>{{ producto.nombre }}</td>
+          <td>${{ producto.itbs }}</td>
+          <td>${{ producto.precio }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="total">
+      <p>SubTotal: {{ totales.productos }}</p>
+      <p>ITBS: {{ totales.itbs }}</p>
+
+      <p>TOTAL: {{ totales.total }}</p>
+    </div>
   </section>
 </template>
 
@@ -48,7 +62,11 @@ let producto: productos = reactive({
 
 const listaProductos: Array<productos> = reactive([]);
 
-let totalProducto = ref(0);
+let totales = ref({
+  itbs: 0,
+  productos: 0,
+  total: 0,
+});
 
 const valorItbs = computed(() => Number((producto.precio * 0.18).toFixed(2)));
 
@@ -60,18 +78,20 @@ const submit = () => {
   };
 
   listaProductos.push(nuevoProductos);
-  console.log(typeof listaProductos[0]?.precio)
-  totalProducto.value = listaProductos.reduce((acc, producto) => {
-    return acc + producto.precio;
+  totales.value.productos = listaProductos.reduce((acc, producto) => {
+    return acc + +producto.precio;
   }, 0);
+
+  totales.value.itbs = listaProductos.reduce((acc, producto) => {
+    return acc + producto.itbs;
+  }, 0);
+
+  totales.value.total = totales.value.itbs + totales.value.productos;
 
   Object.assign(producto, {
     nombre: "",
     precio: 0,
   });
-
-  console.log(listaProductos);
-  console.log(totalProducto.value);
 };
 </script>
 
@@ -83,35 +103,52 @@ article {
   align-items: center;
 }
 
-.view {
-  width: 150px;
+/* .view {
+  width: 300px;
   display: flex;
   gap: 10px;
   background-color: black;
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-}
-ul {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border: 1px solid rgb(131, 233, 22);
+} */
+
+.tabla-productos {
   width: 500px;
-}
-li {
-  width: 80%;
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  padding: 20px;
+  border-collapse: collapse;
+  margin: 20px auto;
+  font-family: sans-serif;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.total span {
+.tabla-productos thead {
+  background: rgb(131, 233, 22);
+  color: #000;
+}
+
+.tabla-productos th,
+.tabla-productos td {
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.total, .view {
+  width: 400px;
+  border-collapse: collapse;
+  margin: 20px auto;
+
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
   background-color: black;
   color: azure;
   padding: 10px;
-  border-radius: 4px;
-}
 
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 </style>
