@@ -27,7 +27,7 @@
       </li>
     </ul>
 
-    <p>{{ totalProducto }}</p>
+    <p class="total">Total: <span>{{ totalProducto }}</span></p>
   </section>
 </template>
 
@@ -106,4 +106,12 @@ li {
   justify-content: space-between;
   padding: 20px;
 }
+
+.total span {
+  background-color: black;
+  color: azure;
+  padding: 10px;
+  border-radius: 4px;
+}
+
 </style>
